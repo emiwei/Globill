@@ -24,6 +24,7 @@
       }
     },
     "web": {
+      "name": "Globill",
       "favicon": "./assets/favicon.png"
     }
   }
