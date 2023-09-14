@@ -2,11 +2,12 @@ import { StatusBar } from 'expo-status-bar';
 import { StyleSheet, Text, View, Pressable } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import CreateBill from './src/pages/CreateBill';
 
 function HomeScreen({ navigation }) {
   return (
     <View style={{ flex: 1, alignItems: 'flex-start', justifyContent: 'flex-start', padding: 20, paddingTop: 110 }}>
-      <Pressable onPress={() => navigation.navigate('NewBill')}>
+      <Pressable onPress={() => navigation.navigate('CreateBill')}>
         <Text style={styles.categories}>New Bill</Text>
       </Pressable>
       <Pressable onPress={() => navigation.navigate('JoinBill')}>
@@ -22,13 +23,6 @@ function HomeScreen({ navigation }) {
   );
 }
 
-function NewBill() {
-  return (
-    <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-      <Text>Create a new bill</Text>
-    </View>
-  );
-}
 
 function JoinBill() {
   return (
@@ -65,7 +59,7 @@ export default function App() {
           cardStyle: { backgroundColor: '#363738', }
         }}>
         <Stack.Screen name="Home" component={HomeScreen}/>
-        <Stack.Screen name="NewBill" component={NewBill} />
+        <Stack.Screen name="CreateBill" component={CreateBill} />
         <Stack.Screen name="JoinBill" component={JoinBill} />
         <Stack.Screen name="MyBills" component={MyBill} />
         <Stack.Screen name="LogIn" component={LogIn} />
