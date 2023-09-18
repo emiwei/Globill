@@ -1,15 +1,36 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, Modal, Pressable, TextInput } from 'react-native';
+import { StyleSheet, Text, View, Modal, Pressable, TextInput, FlatList } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { useState } from 'react';
+import NewItem from '../components/NewItem';
+import NewPerson from '../components/NewPerson';
+import { ScrollView } from 'react-native-web';
 
 export default function CreateBill() {
-    const [modalVisible, setModalVisible] = useState(false);
+    const [modalVisible, setModalVisible] = useState(false);    
     const [itemName, setItemName] = useState('');
     const [itemPrice, setItemPrice] = useState(0.0);
+    const [data, setData ] = useState([]); 
+
+    const saveItem = () => {
+        setModalVisible(!modalVisible);
+        if (itemName && itemPrice) {
+            const newDish = { id: Date.now().toString(), name: itemName, price: itemPrice };
+            setData((prevData) => [...prevData, newDish]);
+            setItemName('');
+            setItemPrice('');
+        }
+    };
+
+    const cancelItem = () => {
+        setModalVisible(!modalVisible)
+        setItemName('');
+        setItemPrice('');
+    }
+
     return (
-        <View style={{ flex: 1, alignItems: 'center', justifyContent: 'flex-start', paddingTop: 100 }}>
+        <View style={{ alignItems: 'center', justifyContent: 'flex-start', paddingTop: 100 }}>
             <Text style={styles.sharecode}>Share Code: </Text>
             <Modal
                 animationType='none'
@@ -37,12 +58,13 @@ export default function CreateBill() {
                             />
                         </View>
                         <View style={{ flexDirection: 'row', alignItems: 'flex-start'}}>
-                            <Pressable onPress={() => setModalVisible(!modalVisible)}
+                            <Pressable onPress={cancelItem}
                                 style={styles.buttons}>
                                 <Text style={styles.buttonText}>Cancel</Text>
                             </Pressable>
                             <Pressable
-                                style={styles.buttons}>
+                                style={styles.buttons}
+                                onPress={saveItem}>
                                 <Text style={styles.buttonText}>Save</Text>
                             </Pressable>
                         </View>
@@ -50,6 +72,17 @@ export default function CreateBill() {
                     </View>
                 </View>
             </Modal>
+            
+            <View style={{ width:'85%', paddingVertical: 20 }}>
+                    <FlatList
+                        data={data}
+                        keyExtractor={(item) => item.id}
+                        renderItem={({item}) => (
+                            <NewItem name={item.name} price={item.price}></NewItem>
+                        )}
+                    />
+                
+            </View>  
             <Pressable 
                 onPress={() => {
                     setModalVisible(true); 
@@ -57,6 +90,10 @@ export default function CreateBill() {
                 }}>
                 <Text style={styles.additem}>+Add an item</Text>
             </Pressable>
+            <View style={{ borderBottomColor: 'black', 
+                            borderBottomWidth: 1,
+                            width: '85%'}}/>
+            <NewPerson name="Em"/>
         </View>
     )
 }
@@ -70,6 +107,7 @@ const styles = StyleSheet.create({
     additem: {
         fontSize: 20,
         fontFamily: 'Avenir',
+        paddingVertical: 20,
     },
     modalView: {
         margin: 20,
@@ -86,12 +124,14 @@ const styles = StyleSheet.create({
         fontSize: 20,
         fontFamily: 'Avenir',
         color: 'white',
+        paddingVertical: 10,
     },
     dollarSign: {
         fontSize: 20,
         fontFamily: 'Avenir',
         color: 'white',
         margin: 0,
+        paddingVertical: 10,
     },
     buttons: {
         color: 'white',
