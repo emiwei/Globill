@@ -3,6 +3,7 @@ import { StyleSheet, Text, View, Pressable } from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import CreateBill from './src/pages/CreateBill';
+import CustomHeader from './src/components/CustomHeader';
 
 function HomeScreen({ navigation }) {
   return (
@@ -55,11 +56,19 @@ export default function App() {
     <NavigationContainer>
       <Stack.Navigator
         screenOptions={{
-          headerShown: false,
-          cardStyle: { backgroundColor: '#363738', }
+          headerShown: true,
+          cardStyle: { backgroundColor: '#2d2d2e', }
         }}>
-        <Stack.Screen name="Home" component={HomeScreen}/>
-        <Stack.Screen name="CreateBill" component={CreateBill} />
+        <Stack.Screen name="Home" 
+                      component={HomeScreen}
+                      options={{
+                        header: () => {null}
+                      }}/>
+        <Stack.Screen name="CreateBill" 
+                      component={CreateBill} 
+                      options={{
+                        header: () => <CustomHeader title="CreateBill"/>,
+                      }}/>
         <Stack.Screen name="JoinBill" component={JoinBill} />
         <Stack.Screen name="MyBills" component={MyBill} />
         <Stack.Screen name="LogIn" component={LogIn} />
@@ -74,5 +83,5 @@ const styles = StyleSheet.create({
     fontSize: 37,
     paddingBottom: 40,
     fontFamily: 'Avenir'
-  }
+  },
 });

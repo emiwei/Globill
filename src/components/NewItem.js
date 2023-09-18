@@ -14,10 +14,13 @@ const styles = StyleSheet.create({
     line: {
         flexDirection: 'row',
         justifyContent: 'space-between',
-        borderColor: 'black',
+        paddingVertical: 20,
+        width: '100%',
+        paddingHorizontal: 20,
     },
     listText:  {
         fontSize: 20,
         fontFamily: 'Avenir',
+        color: 'white',
     }
 });
