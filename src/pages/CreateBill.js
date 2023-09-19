@@ -6,12 +6,16 @@ import { useState } from 'react';
 import NewItem from '../components/NewItem';
 import NewPerson from '../components/NewPerson';
 import ScreenWrapper from '../components/ScreenWrapper';
+// import { firebase } from '../../firebase';
 
 export default function CreateBill() {
     const [modalVisible, setModalVisible] = useState(false);    
     const [itemName, setItemName] = useState('');
     const [itemPrice, setItemPrice] = useState(0.0);
     const [data, setData ] = useState([]); 
+    
+
+    // const db = firebase.database().ref();
 
     const saveItem = () => {
         setModalVisible(!modalVisible);
@@ -95,7 +99,20 @@ export default function CreateBill() {
                 <View style={{ borderBottomColor: 'white',
                                 borderBottomWidth: StyleSheet.hairlineWidth,
                                 width: '85%'}}/>
-                <NewPerson name="Em"/>
+                <View style={{width: '100%', height: '25%'}}>
+                    <ScrollView
+                        horizontal={true}
+                        alwaysBounceHorizontal={true}>
+                        <NewPerson name="Em"/>
+                        <View style={{width: 65, height: 65, borderColor: 'white', borderWidth: StyleSheet.hairlineWidth, borderStyle: 'dashed', justifyContent: 'center', alignItems: 'center'}}>
+                            <Pressable
+                                >
+                                <Text style={styles.boxText}>+Add</Text>
+                            </Pressable>
+                        </View>
+                    </ScrollView>
+                </View>
+                
             </SafeAreaView>
         </ScreenWrapper>
         
@@ -148,6 +165,11 @@ const styles = StyleSheet.create({
     buttonText: {
         color: 'white',
         fontSize: 20,
+        fontFamily: 'Avenir',
+    },
+    boxText: {
+        color: 'white',
+        fontSize: 15,
         fontFamily: 'Avenir',
     }
   });
