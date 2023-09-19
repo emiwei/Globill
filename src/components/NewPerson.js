@@ -2,7 +2,7 @@ import { View, Text, StyleSheet } from 'react-native';
 import { useState } from 'react';
 import { withSafeAreaInsets } from 'react-native-safe-area-context';
 
-export default function NewPerson({ name, items }) {
+export default function NewPerson({ name }) {
     return (
         <View style={{width: 65, height: 80, paddingVertical: 10}}>
             <View style={styles.personBox}>
