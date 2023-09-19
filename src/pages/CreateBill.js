@@ -212,18 +212,20 @@ export default function CreateBill() {
             
                 <View style={{ borderBottomColor: 'white',
                                 borderBottomWidth: StyleSheet.hairlineWidth,
-                                width: '85%'}}/>
+                                width: '85%',}}/>
                 <View style={{width: '100%', height: '25%'}}>
                     <ScrollView
+                        style={{paddingTop: 15, marginStart: 10,}}
                         horizontal={true}
                         alwaysBounceHorizontal={true}>
+                        
                         <FlatList
                             data={[...users.keys()]} // Pass the user names array here
                             keyExtractor={(user) => user}
                             horizontal={true}
                             renderItem={({ item: user }) => (
-                                <View>
-                                <NewPerson name={user} />
+                                <View style={{ alignContent: 'center'}}>
+                                <NewPerson style={{backgroundColor: '#ff5c1c' }} name={user} />
                                 </View>
                             )}
                         />
@@ -310,6 +312,7 @@ const styles = StyleSheet.create({
         borderStyle: 'dashed', 
         justifyContent: 'center', 
         alignItems: 'center',
+        marginHorizontal: 7,
     },
     overlay: {
         position: 'absolute',
