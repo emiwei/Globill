@@ -4,6 +4,7 @@ import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import CreateBill from './src/pages/CreateBill';
 import CustomHeader from './src/components/CustomHeader';
+import SummaryPage from './src/pages/SummaryPage';
 
 function HomeScreen({ navigation }) {
   return (
@@ -69,6 +70,12 @@ export default function App() {
                       options={{
                         header: () => <CustomHeader title="CreateBill"/>,
                       }}/>
+        <Stack.Screen name="SummarizeBill" 
+                      component={SummaryPage} 
+                      options={{
+                        header: () => <CustomHeader title="SummaryPage"/>,
+                      }}/>
+                    
         <Stack.Screen name="JoinBill" component={JoinBill} />
         <Stack.Screen name="MyBills" component={MyBill} />
         <Stack.Screen name="LogIn" component={LogIn} />

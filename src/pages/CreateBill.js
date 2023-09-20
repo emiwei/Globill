@@ -16,9 +16,8 @@ export default function CreateBill() {
     const [currItemName, setCurrItemName] = useState('');
     const [currItemPrice, setCurrItemPrice] = useState(0.0);
     const [data, setData ] = useState([]); 
-    const [currCustomerList, setCurrCustomerList] = useState([]);
-    const [users, setUsers] = useState(new Map());
-    const [selectedUser, setSelectedUser] = useState('');
+    const [userItemsMap, setUserItemsMap] = useState(new Map());
+    const [selectedUser, setSelectedUser] = useState(null);
 
     const navigation = useNavigation();
     
@@ -30,15 +29,47 @@ export default function CreateBill() {
         setFirstModal(true);
     }, []);
 
+    const goToSummaryPage = () => {
+        navigation.navigate('Summary', { data, userItemsMap });
+    }
+
     const saveItem = () => {
         setModalVisible(!modalVisible);
         if (currItemName && currItemPrice) {
-            let newDish = { id: Date.now().toString(), name: currItemName, price: currItemPrice };
+            let newDish = { id: Date.now().toString(), name: currItemName, price: currItemPrice, assignedTo: null };
             setData((prevData) => [...prevData, newDish]);
             setCurrItemName('');
-            setCurrItemPrice('');
+            setCurrItemPrice(0.0);
         }
     };
+
+    const assignItem = (itemName) => {
+        if (selectedUser && itemName) {
+            const assignedItems = userItemsMap.get(selectedUser) || [];
+            const itemIndex = data.findIndex((item) => item.name === itemName);
+      
+            if (itemIndex !== -1) {
+              // Update the assignedTo property of the item
+              const isAssigned = assignedItems.includes(itemName);
+
+              if (isAssigned) {
+                    const updatedAssignedItems = assignedItems.filter((item) => item !== itemName);
+                    setUserItemsMap(new Map(userItemsMap.set(selectedUser, updatedAssignedItems)));
+              }
+              else {
+                    const updatedItem = { ...data[itemIndex], assignedTo: selectedUser };
+                    const updatedData = [...data];
+                    updatedData[itemIndex] = updatedItem;
+                    setData(updatedData);
+            
+                    // Update the mapping between users and items
+                    assignedItems.push(itemName);
+                    setUserItemsMap(new Map(userItemsMap.set(selectedUser, assignedItems)));
+              }
+              
+            }
+        }
+    }
 
     const cancelItem = () => {
         setModalVisible(!modalVisible);
@@ -55,31 +86,44 @@ export default function CreateBill() {
         navigation.goBack();
     }
 
-    const getAssignedItems = ( { customerID }) => {
-        setCurrCustomerList(users.get(customerID)); // get items assigned to selected person
-        
-    }
-
-    const assignItemstoCustomer = ( { customerID, itemID }) => {
-    }
-
 
     const addFirstUser = () => {
         setFirstModal(!firstModal);
-        setUsers(users.set(selectedUser, [])); 
+        setUserItemsMap(new Map(userItemsMap.set(selectedUser, [])));
+        setSelectedUser(selectedUser);
     }
     const addUser = () => {
         // need to error check to ensure no repeated user names
-        if (selectedUser && users.has(selectedUser)) {
-            // display error message stating that name is already taken
-            console.log(users);
-        }
-        else {
-            // add user to the map of users
+        if (selectedUser && !userItemsMap.has(selectedUser)) {
             setUserModal(!userModal);
-            setUsers(users.set(selectedUser, [])); 
+            // Initialize userItemsMap with an empty array for the selected user
+            setUserItemsMap(new Map(userItemsMap.set(selectedUser, [])));
+        } 
+        else {
+            // Handle error when user already exists
+            console.log('User already exists');
         }
     };
+
+    const handleUserSelect = (user) => {
+        // Handle user selection
+        setSelectedUser(user);
+      };
+
+    const handleItemSelect = (item) => {
+    // Handle item selection (toggle)
+        if (selectedUser) {
+            const isSelected = data.some((d) => d.name === item && d.assignedTo === selectedUser);
+            if (isSelected) {
+            // If the item is already assigned to the user, unassign it
+            setData((prevData) => prevData.filter((d) => !(d.name === item && d.assignedTo === selectedUser)));
+            } else {
+            // Assign the item to the user
+            const newItem = { id: Date.now().toString(), name: item, price: 0, assignedTo: selectedUser };
+            setData((prevData) => [...prevData, newItem]);
+            }
+        }
+      };
 
     return (
         <ScreenWrapper>
@@ -196,7 +240,12 @@ export default function CreateBill() {
                                 data={data}
                                 keyExtractor={(item) => item.id}
                                 renderItem={({item}) => (
-                                    <NewItem name={item.name} price={item.price}></NewItem>
+                                    <NewItem name={item.name} 
+                                             price={item.price}
+                                             isSelected={selectedUser && userItemsMap.get(selectedUser)?.includes(item.name)}
+                                             onSelect={() => assignItem(item.name)}
+                                        
+                                    />
                                 )}
                             />
                             <Pressable
@@ -218,8 +267,15 @@ export default function CreateBill() {
                         style={{paddingTop: 15, marginStart: 10,}}
                         horizontal={true}
                         alwaysBounceHorizontal={true}>
-                        
-                        <FlatList
+                        {[...userItemsMap.keys()].map((user) => (
+                            <NewPerson
+                                key={user}
+                                name={user}
+                                isSelected={ user == selectedUser }
+                                onSelect={handleUserSelect}
+                            />
+                        ))}
+                        {/* <FlatList
                             data={[...users.keys()]} // Pass the user names array here
                             keyExtractor={(user) => user}
                             horizontal={true}
@@ -228,7 +284,7 @@ export default function CreateBill() {
                                 <NewPerson style={{backgroundColor: '#ff5c1c' }} name={user} />
                                 </View>
                             )}
-                        />
+                        /> */}
 
                         <View style={styles.addUser}>
                             <Pressable

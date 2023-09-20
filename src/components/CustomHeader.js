@@ -3,7 +3,7 @@ import { View, Text, TouchableOpacity, StyleSheet } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
-export default function CustomHeader({ title }) {
+export default function CustomHeader() {
   const navigation = useNavigation();
 
   return (
